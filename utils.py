@@ -1,4 +1,5 @@
 import os
+import pathlib
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
@@ -7,7 +8,8 @@ import json
 import requests
 from pathvalidate import sanitize_filename
 
-CONFIG_FILE = os.getcwd() + os.path.sep + 'config.txt'  # Location of config.txt config file.
+CONFIG_FILE = os.path.expanduser('~/.config/automatic-twitch-recorder.conf')  # Location of config.txt config file.
+pathlib.Path(CONFIG_FILE).parent.mkdir(parents=True, exist_ok=True)
 _APP_ACCESS_TOKEN = ''
 _APP_ACCESS_TOKEN_REFRESH_TIME = None
 CONFIG = None
