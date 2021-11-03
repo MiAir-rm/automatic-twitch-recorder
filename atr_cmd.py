@@ -95,7 +95,12 @@ class AtrCmd(cmd.Cmd):
         return True
 
     def do_exit(self, line):
-        print("client exit")
+        payload = self._create_payload('exit')
+        self._send_cmd(payload)
+        sys.exit()
+
+    def do_close(self, line):
+        print('client close')
         sys.exit()
 
     def help_exit(self):
