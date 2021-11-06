@@ -70,7 +70,7 @@ class AtrCmd(cmd.Cmd):
             payload = self._create_payload('time', line)
             self._send_cmd(payload)
         except ValueError:
-            print('\''+line+'\' is not valid.')
+            print('\'' + line + '\' is not valid.')
 
     def help_time(self):
         print('\n'.join([
@@ -97,6 +97,16 @@ class AtrCmd(cmd.Cmd):
     def do_exit(self, line):
         print("client exit")
         sys.exit()
+
+    def help_backup_cmd(self):
+        print('\n'.join([
+            'backup_cmd backup command',
+            'Configures the backup command for saving the videos.',
+        ]))
+
+    def do_backup_cmd(self, line):
+        payload = self._create_payload('backup_cmd', line)
+        self._send_cmd(payload)
 
     def help_exit(self):
         print('\n'.join([
