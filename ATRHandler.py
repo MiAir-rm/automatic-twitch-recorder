@@ -120,7 +120,7 @@ class ATRHandler(BaseHTTPRequestHandler):
             post_data['cmd'] (str): the command to execute. \n
             post_data['args'] (list): the arguments for the command.
 
-           """
+        """
         cmd_executor = {
             'exit': self.cmd_exit,
             'start': self.cmd_start,
@@ -129,6 +129,7 @@ class ATRHandler(BaseHTTPRequestHandler):
             'add': self.cmd_add,
             'time': self.cmd_time,
             'download_folder': self.cmd_download_folder,
+            'backup_cmd': self.cmd_backup_cmd
         }
         func = cmd_executor[post_data['cmd']]
         if len(post_data['args']) > 0:
@@ -182,6 +183,14 @@ class ATRHandler(BaseHTTPRequestHandler):
     def cmd_download_folder(self, args):
         try:
             self.message['println'] = self.server.set_download_folder(str(args[0]).strip())
+            self.ok = True
+        except ValueError:
+            self.ok = False
+            self.message['println'] = '\'' + args[0] + '\' is not valid.'
+
+    def cmd_backup_cmd(self, args):
+        try:
+            self.message['println'] = self.server.set_backup_cmd(str(args[0]).strip())
             self.ok = True
         except ValueError:
             self.ok = False

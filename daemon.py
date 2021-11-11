@@ -8,6 +8,7 @@ import ATRHandler
 import twitch
 from utils import get_client_id, StreamQualities
 from watcher import Watcher
+from backupper import Backupper
 
 
 class Daemon(HTTPServer):
@@ -29,6 +30,7 @@ class Daemon(HTTPServer):
         self.kill = False
         self.started = False
         self.download_folder = os.getcwd() + os.path.sep + "#streamer#"
+        self.backup_cmd = ''
         # ThreadPoolExecutor(max_workers): If max_workers is None or not given, it will default to the number of
         # processors on the machine, multiplied by 5
         self.pool = ThreadPoolExecutor()
@@ -88,6 +90,10 @@ class Daemon(HTTPServer):
         self.download_folder = download_folder
         return 'Download folder is now set to \'' + download_folder + '\' .'
 
+    def set_backup_cmd(self, backup_cmd):
+        self.backup_cmd = backup_cmd
+        return f'Backup folder is now set to \'{self.backup_cmd}\'.'
+
     def _check_streams(self):
         user_ids = []
 
@@ -139,12 +145,23 @@ class Daemon(HTTPServer):
         self.watched_streamers.pop(streamer)
         if not cleanup:
             print('Finished watching ' + streamer)
+
+            if self.backup_cmd != '':
+                output_filepath = streamer_dict['output_filepath']
+                backupper = Backupper(streamer_dict, self.backup_cmd, output_filepath)
+                t = self.pool.submit(backupper.backup)
+                t.add_done_callback(self._backup_callback)
+
         else:
             output_filepath = streamer_dict['output_filepath']
             if os.path.exists(output_filepath):
                 os.remove(output_filepath)
         if not kill:
             self.add_streamer(streamer, streamer_dict['preferred_quality'])
+
+    def _backup_callback(self, returned_backup):
+        backup_cmd = returned_backup.result()
+        print('Finished backup ' + backup_cmd)
 
     def get_streamers(self):
         return list(self.watched_streamers.keys()), list(self.streamers.keys())
