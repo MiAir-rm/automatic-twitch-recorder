@@ -14,7 +14,7 @@ class Watcher:
 
     def __init__(self, streamer_dict, download_folder):
         self.streamer_dict = streamer_dict
-        self.streamer = self.streamer_dict['user_info']['display_name']
+        self.streamer = self.streamer_dict['user_info']['login']
         self.streamer_login = self.streamer_dict['user_info']['login']
         self.stream_title = self.streamer_dict['stream_info']['title']
         self.stream_quality = self.streamer_dict['preferred_quality']

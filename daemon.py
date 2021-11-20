@@ -99,14 +99,14 @@ class Daemon(HTTPServer):
 
         # get channel ids of all streamers
         for streamer in self.streamers.keys():
-            user_ids.append(self.streamers[streamer]['user_info']['id'])
+            user_ids.append(self.streamers[streamer]['user_login']['id'])
 
         if user_ids:
             streams_info = twitch.get_stream_info(*user_ids)
 
             # save streaming information for all streamers, if it exists
             for stream_info in streams_info:
-                streamer_name = stream_info['user_name'].lower()
+                streamer_name = stream_info['user_login'].lower()
                 self.streamers[streamer_name].update({'stream_info': stream_info})
 
             live_streamers = []
