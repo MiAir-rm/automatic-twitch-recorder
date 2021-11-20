@@ -99,7 +99,7 @@ class Daemon(HTTPServer):
 
         # get channel ids of all streamers
         for streamer in self.streamers.keys():
-            user_ids.append(self.streamers[streamer]['user_login']['id'])
+            user_ids.append(self.streamers[streamer]['user_info']['id'])
 
         if user_ids:
             streams_info = twitch.get_stream_info(*user_ids)
@@ -116,7 +116,7 @@ class Daemon(HTTPServer):
                 try:
                     stream_info = streamer_info['stream_info']
                     if stream_info['type'] == 'live':
-                        live_streamers.append(stream_info['user_name'].lower())
+                        live_streamers.append(stream_info['user_login'].lower())
                 except KeyError:
                     pass
 
